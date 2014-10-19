@@ -10,15 +10,13 @@ function import()
   if [ ! -f $file ]; then
     echo "$file" >> log/error.imp
   fi
-  mysql -h127.0.0.1 -P3306 -uroot -p ${link[5]} < ${file}
+  mysql -h10.13.32.140 -P9099 -ucaijingtest -pcaijing28 ${link[4]} < ${file}
   rm $file
 }
 
 IFS=$'\n'
 
-[ ! -f log/db.exp ] && { exit; }
-
-dbs=($(cat log/db.exp))
+dbs=($(cat db.list))
 
 dbl=
 if [ -f log/db.imp ]; then
@@ -28,9 +26,9 @@ fi
 i=0
 while [ "$i" -lt "${#dbs[@]}" ]; do
   db=${dbs[$i]}
-  echo 2:$i $db
-  [ $dbl ] && [ ${dbl[$i]+qb} ] && { i=$(( $i + 1 )) && continue; }
   
+  echo 2:$db
+    
   [ ! -f log/${db}.exp ] && { exit; }
   tbs=($(cat log/${db}.exp))
   
@@ -50,7 +48,5 @@ while [ "$i" -lt "${#dbs[@]}" ]; do
     exit
   done
   i=$(( $i + 1 ))
-  echo "$db" >> log/db.imp
-  break
 done
 

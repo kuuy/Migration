@@ -13,8 +13,7 @@ function export()
   if [ -f $file ]; then
     rm $file
   fi
-  
-  mysqldump --host=${link[0]} --port ${link[1]} -u${link[2]} -p${link[3]} --databases $1 --tables ${link[4]} --default-character-set=${link[5]} --lock-tables=false  --force > ${file}
+  mysqldump --host=${link[0]} --port ${link[1]} -u${link[2]} -p${link[3]} --databases ${link[4]} --tables $2 --default-character-set=${link[5]} --lock-tables=false  --force > ${file}
 }
 
 IFS=$'\n'
@@ -28,8 +27,6 @@ fi
 i=0
 while [ "$i" -lt "${#dbs[@]}" ]; do
   db=${dbs[$i]}
-  echo 0:$i $db
-  [ $dbl ] && [ ${dbl[$i]+qb} ] && { i=$(( $i + 1 )) && continue; }
   tbs=($(cat tbl/$db))
   tbl=
   if [ -f log/${db}.exp ]; then
@@ -46,7 +43,5 @@ while [ "$i" -lt "${#dbs[@]}" ]; do
     exit
   done
   i=$(( $i + 1 ))
-  echo "$db" >> log/db.exp
-  break
 done
 
